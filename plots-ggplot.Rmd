@@ -1,0 +1,13 @@
+---
+title: "Creating graphs in R with `ggplot2`"
+author: "Julie Lowndes"
+date: "2023-10-14"
+output: html_document
+---
+
+# Plots with ggplot2
+
+We are going to make plots in R and it's going to be amazing.
+
+
+
