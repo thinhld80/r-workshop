@@ -5,9 +5,70 @@ date: "2023-10-14"
 output: html_document
 ---
 
-# Plots with ggplot2
 
-We are going to make plots in R and it's going to be amazing.
+```{r}
+## attach libraries
+library(tidyverse)
+library(readxl)
+library(here)
+library(skimr) # install.packages('skimr')
+library(kableExtra) # install.packages('kableExtra')
+
+## read in data
+lobsters <- read_xlsx(here("data/lobsters.xlsx"), skip=4)
+
+
+# explore data
+skimr::skim(lobsters) 
+
+
+lobsters %>%
+  group_by(year) %>%
+  summarize(count_by_year = n())
+
+lobsters %>%
+  summarize(count =  n())
+
+
+lobsters %>%
+  group_by(year)
+
+lobsters %>%
+  group_by(site, year) %>%
+  summarize(count_by_siteyear =  n())
+
+lobsters %>%
+  group_by(site, year) %>%
+  summarize(count_by_siteyear =  n(),
+            mean_size_mm = mean(size_mm))
+
+lobsters %>%
+  group_by(site, year) %>%
+  summarize(count_by_siteyear =  n(), 
+            mean_size_mm = mean(size_mm, na.rm=TRUE), 
+            sd_size_mm = sd(size_mm, na.rm=TRUE))
+
+
+siteyear_summary <- lobsters %>%
+  group_by(site, year) %>%
+  summarize(count_by_siteyear =  n(), 
+            mean_size_mm = mean(size_mm, na.rm = TRUE), 
+            sd_size_mm = sd(size_mm, na.rm = TRUE))
+
+## inspect our new variable 
+siteyear_summary 
+
+
+## make a table with our new variable
+siteyear_summary %>%
+  kable()
+
+
+"There are #r nrow(lobsters)# total lobsters included in this report."
+
+
+
+```
 
 
 

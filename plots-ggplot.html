@@ -358,10 +358,978 @@ display: none;
 </div>
 
 
-<div id="plots-with-ggplot2" class="section level1">
-<h1>Plots with ggplot2</h1>
-<p>We are going to make plots in R and it’s going to be amazing.</p>
-</div>
+<pre class="r"><code>## attach libraries
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(readxl)
+library(here)</code></pre>
+<pre><code>## here() starts at D:/R Project/r-workshop</code></pre>
+<pre class="r"><code>library(skimr) # install.packages(&#39;skimr&#39;)
+library(kableExtra) # install.packages(&#39;kableExtra&#39;)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;kableExtra&#39;
+## 
+## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     group_rows</code></pre>
+<pre class="r"><code>## read in data
+lobsters &lt;- read_xlsx(here(&quot;data/lobsters.xlsx&quot;), skip=4)
+
+
+# explore data
+skimr::skim(lobsters) </code></pre>
+<table style="width: auto;" class="table table-condensed">
+<caption>
+Data summary
+</caption>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Name
+</td>
+<td style="text-align:left;">
+lobsters
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of rows
+</td>
+<td style="text-align:left;">
+2893
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of columns
+</td>
+<td style="text-align:left;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+_______________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Column type frequency:
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+________________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Group variables
+</td>
+<td style="text-align:left;">
+None
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+empty
+</th>
+<th style="text-align:right;">
+n_unique
+</th>
+<th style="text-align:right;">
+whitespace
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+date
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+site
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+replicate
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+sd
+</th>
+<th style="text-align:right;">
+p0
+</th>
+<th style="text-align:right;">
+p25
+</th>
+<th style="text-align:right;">
+p50
+</th>
+<th style="text-align:right;">
+p75
+</th>
+<th style="text-align:right;">
+p100
+</th>
+<th style="text-align:left;">
+hist
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+year
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2014.70
+</td>
+<td style="text-align:right;">
+1.19
+</td>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+▂▂▃▇▆
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+month
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+8.04
+</td>
+<td style="text-align:right;">
+0.19
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+▇▁▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+transect
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.72
+</td>
+<td style="text-align:right;">
+2.30
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+▇▅▃▂▂
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+size_mm
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+71.38
+</td>
+<td style="text-align:right;">
+14.75
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+81
+</td>
+<td style="text-align:right;">
+165
+</td>
+<td style="text-align:left;">
+▁▇▆▁▁
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>lobsters %&gt;%
+  group_by(year) %&gt;%
+  summarize(count_by_year = n())</code></pre>
+<pre><code>## # A tibble: 5 × 2
+##    year count_by_year
+##   &lt;dbl&gt;         &lt;int&gt;
+## 1  2012           231
+## 2  2013           243
+## 3  2014           510
+## 4  2015          1100
+## 5  2016           809</code></pre>
+<pre class="r"><code>lobsters %&gt;%
+  summarize(count =  n())</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   count
+##   &lt;int&gt;
+## 1  2893</code></pre>
+<pre class="r"><code>lobsters %&gt;%
+  group_by(year)</code></pre>
+<pre><code>## # A tibble: 2,893 × 7
+## # Groups:   year [5]
+##     year month date    site  transect replicate size_mm
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
+##  1  2012     8 8/20/12 ivee         3 A              70
+##  2  2012     8 8/20/12 ivee         3 B              60
+##  3  2012     8 8/20/12 ivee         3 B              65
+##  4  2012     8 8/20/12 ivee         3 B              70
+##  5  2012     8 8/20/12 ivee         3 B              85
+##  6  2012     8 8/20/12 ivee         3 C              60
+##  7  2012     8 8/20/12 ivee         3 C              65
+##  8  2012     8 8/20/12 ivee         3 C              67
+##  9  2012     8 8/20/12 ivee         3 D              70
+## 10  2012     8 8/20/12 ivee         4 B              85
+## # ℹ 2,883 more rows</code></pre>
+<pre class="r"><code>lobsters %&gt;%
+  group_by(site, year) %&gt;%
+  summarize(count_by_siteyear =  n())</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;site&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 25 × 3
+## # Groups:   site [5]
+##    site   year count_by_siteyear
+##    &lt;chr&gt; &lt;dbl&gt;             &lt;int&gt;
+##  1 aque   2012                38
+##  2 aque   2013                32
+##  3 aque   2014               100
+##  4 aque   2015                83
+##  5 aque   2016                48
+##  6 carp   2012                78
+##  7 carp   2013                93
+##  8 carp   2014                79
+##  9 carp   2015                90
+## 10 carp   2016               231
+## # ℹ 15 more rows</code></pre>
+<pre class="r"><code>lobsters %&gt;%
+  group_by(site, year) %&gt;%
+  summarize(count_by_siteyear =  n(),
+            mean_size_mm = mean(size_mm))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;site&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 25 × 4
+## # Groups:   site [5]
+##    site   year count_by_siteyear mean_size_mm
+##    &lt;chr&gt; &lt;dbl&gt;             &lt;int&gt;        &lt;dbl&gt;
+##  1 aque   2012                38         71  
+##  2 aque   2013                32         72.1
+##  3 aque   2014               100         76.9
+##  4 aque   2015                83         68.5
+##  5 aque   2016                48         68.7
+##  6 carp   2012                78         74.4
+##  7 carp   2013                93         76.6
+##  8 carp   2014                79         NA  
+##  9 carp   2015                90         70.7
+## 10 carp   2016               231         68.9
+## # ℹ 15 more rows</code></pre>
+<pre class="r"><code>lobsters %&gt;%
+  group_by(site, year) %&gt;%
+  summarize(count_by_siteyear =  n(), 
+            mean_size_mm = mean(size_mm, na.rm=TRUE), 
+            sd_size_mm = sd(size_mm, na.rm=TRUE))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;site&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 25 × 5
+## # Groups:   site [5]
+##    site   year count_by_siteyear mean_size_mm sd_size_mm
+##    &lt;chr&gt; &lt;dbl&gt;             &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;
+##  1 aque   2012                38         71        10.2 
+##  2 aque   2013                32         72.1      12.3 
+##  3 aque   2014               100         76.9       9.32
+##  4 aque   2015                83         68.5      12.6 
+##  5 aque   2016                48         68.7      12.5 
+##  6 carp   2012                78         74.4      14.6 
+##  7 carp   2013                93         76.6       8.71
+##  8 carp   2014                79         79.1       8.57
+##  9 carp   2015                90         70.7      14.6 
+## 10 carp   2016               231         68.9      12.5 
+## # ℹ 15 more rows</code></pre>
+<pre class="r"><code>siteyear_summary &lt;- lobsters %&gt;%
+  group_by(site, year) %&gt;%
+  summarize(count_by_siteyear =  n(), 
+            mean_size_mm = mean(size_mm, na.rm = TRUE), 
+            sd_size_mm = sd(size_mm, na.rm = TRUE))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;site&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre class="r"><code>## inspect our new variable 
+siteyear_summary </code></pre>
+<pre><code>## # A tibble: 25 × 5
+## # Groups:   site [5]
+##    site   year count_by_siteyear mean_size_mm sd_size_mm
+##    &lt;chr&gt; &lt;dbl&gt;             &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;
+##  1 aque   2012                38         71        10.2 
+##  2 aque   2013                32         72.1      12.3 
+##  3 aque   2014               100         76.9       9.32
+##  4 aque   2015                83         68.5      12.6 
+##  5 aque   2016                48         68.7      12.5 
+##  6 carp   2012                78         74.4      14.6 
+##  7 carp   2013                93         76.6       8.71
+##  8 carp   2014                79         79.1       8.57
+##  9 carp   2015                90         70.7      14.6 
+## 10 carp   2016               231         68.9      12.5 
+## # ℹ 15 more rows</code></pre>
+<pre class="r"><code>## make a table with our new variable
+siteyear_summary %&gt;%
+  kable()</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+site
+</th>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:right;">
+count_by_siteyear
+</th>
+<th style="text-align:right;">
+mean_size_mm
+</th>
+<th style="text-align:right;">
+sd_size_mm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+aque
+</td>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+71.00000
+</td>
+<td style="text-align:right;">
+10.150223
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+aque
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+72.12500
+</td>
+<td style="text-align:right;">
+12.262584
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+aque
+</td>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+76.92000
+</td>
+<td style="text-align:right;">
+9.321074
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+aque
+</td>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+83
+</td>
+<td style="text-align:right;">
+68.45783
+</td>
+<td style="text-align:right;">
+12.555536
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+aque
+</td>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+68.68750
+</td>
+<td style="text-align:right;">
+12.510687
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+carp
+</td>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+78
+</td>
+<td style="text-align:right;">
+74.35897
+</td>
+<td style="text-align:right;">
+14.616282
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+carp
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+93
+</td>
+<td style="text-align:right;">
+76.56989
+</td>
+<td style="text-align:right;">
+8.709562
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+carp
+</td>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:right;">
+79
+</td>
+<td style="text-align:right;">
+79.08974
+</td>
+<td style="text-align:right;">
+8.569329
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+carp
+</td>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:right;">
+70.65556
+</td>
+<td style="text-align:right;">
+14.646517
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+carp
+</td>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+231
+</td>
+<td style="text-align:right;">
+68.90476
+</td>
+<td style="text-align:right;">
+12.470122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ivee
+</td>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+66.07692
+</td>
+<td style="text-align:right;">
+12.092719
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ivee
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+73.77500
+</td>
+<td style="text-align:right;">
+7.640941
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ivee
+</td>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:right;">
+132
+</td>
+<td style="text-align:right;">
+76.02273
+</td>
+<td style="text-align:right;">
+17.860984
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ivee
+</td>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+361
+</td>
+<td style="text-align:right;">
+69.80332
+</td>
+<td style="text-align:right;">
+17.470534
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ivee
+</td>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+193
+</td>
+<td style="text-align:right;">
+71.61658
+</td>
+<td style="text-align:right;">
+13.450454
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mohk
+</td>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+83
+</td>
+<td style="text-align:right;">
+77.25301
+</td>
+<td style="text-align:right;">
+10.587433
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mohk
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+71.86667
+</td>
+<td style="text-align:right;">
+10.190098
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mohk
+</td>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+75.75000
+</td>
+<td style="text-align:right;">
+10.038142
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mohk
+</td>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+296
+</td>
+<td style="text-align:right;">
+59.19932
+</td>
+<td style="text-align:right;">
+16.770357
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mohk
+</td>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+63.01286
+</td>
+<td style="text-align:right;">
+11.875763
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+napl
+</td>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+73.00000
+</td>
+<td style="text-align:right;">
+11.747340
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+napl
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:right;">
+75.31746
+</td>
+<td style="text-align:right;">
+12.989854
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+napl
+</td>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:right;">
+163
+</td>
+<td style="text-align:right;">
+79.51572
+</td>
+<td style="text-align:right;">
+9.556531
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+napl
+</td>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+78.24074
+</td>
+<td style="text-align:right;">
+12.438899
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+napl
+</td>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+127
+</td>
+<td style="text-align:right;">
+74.39370
+</td>
+<td style="text-align:right;">
+10.732060
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>&quot;There are #r nrow(lobsters)# total lobsters included in this report.&quot;</code></pre>
+<pre><code>## [1] &quot;There are #r nrow(lobsters)# total lobsters included in this report.&quot;</code></pre>
 
 
 
